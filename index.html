@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspra | Analytics Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --green: #52E22A;
+      --green-light: #e8fae3;
+      --green-dark: #3ab51e;
+      --black: #0D0D0D;
+      --white: #fafafa;
+      --bg: #f5f5f5;
+      --card-bg: #ffffff;
+      --magenta: #8C1CA8;
+      --teal: #014750;
+      --gray: #d1d3d4;
+      --gray-light: #e8e8e8;
+      --muted: #6b7280;
+      --red: #DC2626;
+      --red-light: #FEE2E2;
+      --red-muted: #EF4444;
+      --border: rgba(0,0,0,0.06);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Layout */
+    .app { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: var(--card-bg);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    .sidebar-logo {
+      padding: 0 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .sidebar-logo svg { height: 28px; }
+
+    .sidebar-workspace {
+      padding: 12px 16px;
+      margin: 0 12px 16px;
+      background: var(--green-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workspace-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--green);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .workspace-info { flex: 1; }
+    .workspace-name { font-weight: 600; font-size: 13px; color: var(--black); }
+    .workspace-role { font-size: 11px; color: var(--muted); text-transform: capitalize; }
+
+    .sidebar-section { padding: 0 12px; margin-bottom: 8px; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 12px 12px 8px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #374151;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .sidebar-link:hover { background: #f3f4f6; }
+    .sidebar-link.active {
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+
+    .sidebar-link svg { width: 18px; height: 18px; opacity: 0.6; }
+    .sidebar-link.active svg { opacity: 1; color: var(--green); }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 240px;
+      flex: 1;
+      padding: 24px 32px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 16px; }
+
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .header-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      background: white;
+      cursor: pointer;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 12px; }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+      }
+
+    /* Stat Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(0,0,0,0.1);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .stat-card.card-total::before { background: var(--green); }
+    .stat-card.card-duration::before { background: var(--teal); }
+    .stat-card.card-connected::before { background: var(--green); }
+    .stat-card.card-not-connected::before { background: var(--red); }
+    .stat-card.card-success::before { background: var(--green-dark); }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .stat-label.label-total { color: var(--green-dark); }
+    .stat-label.label-duration { color: var(--teal); }
+    .stat-label.label-connected { color: var(--green-dark); }
+    .stat-label.label-not-connected { color: var(--red); }
+    .stat-label.label-success { color: var(--green-dark); }
+
+    .stat-label svg { width: 15px; height: 15px; }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      transition: all 0.2s;
+    }
+
+    .card:hover { box-shadow: var(--shadow-sm); }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .card-badge {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    /* Connection Overview Bar */
+    .connection-bar-wrapper { margin-bottom: 16px; }
+
+    .connection-bar {
+      height: 32px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      background: #e5e7eb;
+    }
+
+    .connection-bar .bar-connected {
+      background: var(--green);
+      transition: width 0.6s ease;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .connection-bar .bar-not-connected {
+      background: var(--red);
+      transition: width 0.6s ease;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .connection-legend {
+      display: flex;
+      gap: 24px;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.green { background: var(--green); }
+    .legend-dot.red { background: var(--red); }
+
+    /* Two Column Layout */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+    /* Donut Charts */
+    .donut-section { display: flex; align-items: center; gap: 32px; }
+    .donut-canvas-wrap { position: relative; width: 180px; height: 180px; }
+    .donut-canvas-wrap canvas { width: 180px !important; height: 180px !important; }
+
+    .donut-legend { flex: 1; }
+
+    .donut-legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .donut-legend-item:last-child { border-bottom: none; }
+
+    .donut-legend-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .donut-legend-icon { width: 16px; height: 16px; opacity: 0.7; }
+
+    .donut-legend-label { font-size: 13px; color: #374151; font-weight: 500; }
+
+    .donut-legend-value { font-size: 15px; font-weight: 700; }
+    .donut-legend-value.positive { color: var(--green-dark); }
+    .donut-legend-value.negative { color: var(--red); }
+
+    .donut-legend-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    .donut-sub-items { padding-left: 24px; }
+
+    .donut-sub-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 3px 0;
+    }
+
+    /* Disposition Waterfall */
+    .waterfall-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 60px;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 0;
+    }
+
+    .waterfall-label { font-size: 13px; color: #374151; font-weight: 500; }
+
+    .waterfall-bar-wrap {
+      height: 28px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .waterfall-bar {
+      height: 100%;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      transition: width 0.6s ease;
+    }
+
+    .waterfall-pct { font-size: 13px; color: var(--muted); text-align: right; }
+
+    /* Call Duration Distribution */
+    .duration-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 50px;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 0;
+    }
+
+    .duration-label { font-size: 13px; color: #374151; }
+
+    .duration-bar-wrap {
+      height: 22px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .duration-bar {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.6s ease;
+    }
+
+    .duration-value { font-size: 13px; font-weight: 600; color: var(--black); text-align: right; }
+
+    /* Agent Performance Table */
+    .agent-table { width: 100%; border-collapse: collapse; }
+
+    .agent-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .agent-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .agent-table tr:hover { background: #fafafa; }
+
+    .agent-name { font-weight: 600; color: var(--black); }
+
+    .provider-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .provider-badge.inspra { background: var(--green-light); color: var(--green-dark); }
+    .provider-badge.vapi { background: #f3f4f6; color: #6b7280; }
+
+    .success-rate { font-weight: 600; }
+    .success-rate.high { color: var(--green-dark); }
+    .success-rate.low { color: var(--red); }
+    .success-rate.zero { color: var(--red); }
+
+    /* Chart container */
+    .chart-container { position: relative; height: 280px; }
+    .chart-container canvas { width: 100% !important; }
+
+    .chart-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 20px;
+    }
+
+    .chart-date { font-size: 12px; color: var(--muted); }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .breadcrumb a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover { color: var(--black); }
+    .breadcrumb span { font-size: 13px; color: var(--muted); }
+    .breadcrumb .current { color: var(--black); font-weight: 500; }
+
+    /* User section at bottom of sidebar */
+    .sidebar-user {
+      margin-top: auto;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .user-info { flex: 1; min-width: 0; }
+    .user-email { font-size: 12px; color: var(--black); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="26" font-family="Inter" font-weight="800" font-size="28" fill="#0D0D0D">
+            <tspan fill="#52E22A">i</tspan>NSPR<tspan fill="#52E22A">A</tspan>
+          </text>
+        </svg>
+      </div>
+
+      <div class="sidebar-workspace">
+        <div class="workspace-avatar">DW</div>
+        <div class="workspace-info">
+          <div class="workspace-name">Default Workspace</div>
+          <div class="workspace-role">Owner</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Workspace</div>
+        <a href="#" class="sidebar-link active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Analytics Dashboard
+        </a>
+        <a href="#" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Calls
+        </a>
+        <a href="#" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="m12 12 4 10 1.7-4.3L22 16Z"/></svg>
+          Campaigns
+        </a>
+        <a href="#" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Agents
+        </a>
+        <a href="#" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          Knowledge Base
+        </a>
+        <a href="#" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Settings
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar">G</div>
+        <div class="user-info">
+          <div class="user-email">genius365@mail...</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="breadcrumb">
+        <a href="#">Home</a>
+        <span>/</span>
+        <span class="current">Analytics Dashboard</span>
+      </div>
+
+      <div class="header">
+        <div class="header-left">
+          <h1 class="header-title">Analytics</h1>
+          <div class="header-filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Last 30 Days
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="live-badge">
+            <div class="live-dot"></div>
+            <span>Live</span>
+            <span style="color: var(--muted)">·</span>
+            <span style="font-weight: 600">4,717 calls</span>
+          </div>
+          <div class="header-filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            All Agents
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat Cards Row -->
+      <div class="stats-grid">
+        <div class="stat-card card-total">
+          <div class="stat-label label-total">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Total Calls
+          </div>
+          <div class="stat-value">4,717</div>
+          <div class="stat-sub">All calls</div>
+        </div>
+
+        <div class="stat-card card-duration">
+          <div class="stat-label label-duration">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Total Duration
+          </div>
+          <div class="stat-value">39h 30m</div>
+          <div class="stat-sub">Avg 1 min/call</div>
+        </div>
+
+        <div class="stat-card card-connected">
+          <div class="stat-label label-connected">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Connected
+          </div>
+          <div class="stat-value">2,322</div>
+          <div class="stat-sub">49% connection rate</div>
+        </div>
+
+        <div class="stat-card card-not-connected">
+          <div class="stat-label label-not-connected">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/><line x1="1" y1="1" x2="23" y2="23"/><path d="M4.91 4.91A19.79 19.79 0 0 0 2.11 22a2 2 0 0 0 2 1.72h3a2 2 0 0 0 2-1.72c.127-.96.361-1.903.7-2.81"/></svg>
+            Not Connected
+          </div>
+          <div class="stat-value" style="color: var(--red);">2,395</div>
+          <div class="stat-sub">51% unsuccessful</div>
+        </div>
+
+        <div class="stat-card card-success">
+          <div class="stat-label label-success">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Success Rate
+          </div>
+          <div class="stat-value">99.9%</div>
+          <div class="stat-sub">4712 completed</div>
+        </div>
+      </div>
+
+      <!-- Connection Overview -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Connection Overview</div>
+          <div class="card-badge">4,717 calls</div>
+        </div>
+        <div class="connection-bar-wrapper">
+          <div class="connection-bar">
+            <div class="bar-connected" style="width: 49.2%"></div>
+            <div class="bar-not-connected" style="width: 50.8%"></div>
+          </div>
+          <div class="connection-legend">
+            <div class="legend-item">
+              <div class="legend-dot green"></div>
+              Connected <strong style="margin-left:4px">2,322 (49%)</strong>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot red"></div>
+              Not Connected <strong style="margin-left:4px; color: var(--red)">2,395 (51%)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connected & Not Connected Calls -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Connected Calls</div>
+            <div class="card-badge" style="color: var(--green-dark)">2,322</div>
+          </div>
+          <div class="donut-section">
+            <div class="donut-canvas-wrap">
+              <canvas id="connectedDonut"></canvas>
+            </div>
+            <div class="donut-legend">
+              <div class="donut-legend-item">
+                <div class="donut-legend-left">
+                  <svg class="donut-legend-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#52E22A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  <span class="donut-legend-label">Positive</span>
+                </div>
+                <span class="donut-legend-value positive">20</span>
+              </div>
+              <div class="donut-sub-items">
+                <div class="donut-sub-item"><span>+ Interested</span><span>10</span></div>
+                <div class="donut-sub-item"><span>+ Callback Intent</span><span>10</span></div>
+              </div>
+              <div class="donut-legend-item" style="margin-top: 8px">
+                <div class="donut-legend-left">
+                  <svg class="donut-legend-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                  <span class="donut-legend-label">Unsuccessful</span>
+                </div>
+                <span class="donut-legend-value negative">2,298</span>
+              </div>
+              <div class="donut-sub-items">
+                <div class="donut-sub-item"><span>+ notInterested</span><span>2,296</span></div>
+                <div class="donut-sub-item"><span>+ doNotCallAgain</span><span>2</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Not Connected Calls</div>
+            <div class="card-badge" style="color: var(--red)">2,395</div>
+          </div>
+          <div class="donut-section">
+            <div class="donut-canvas-wrap">
+              <canvas id="notConnectedDonut"></canvas>
+            </div>
+            <div class="donut-legend">
+              <div class="donut-legend-item">
+                <div class="donut-legend-left">
+                  <svg class="donut-legend-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  <span class="donut-legend-label">No Answer</span>
+                </div>
+                <div>
+                  <span class="donut-legend-value negative">241</span>
+                  <span class="donut-legend-sub">10%</span>
+                </div>
+              </div>
+              <div class="donut-legend-item">
+                <div class="donut-legend-left">
+                  <svg class="donut-legend-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+                  <span class="donut-legend-label">Voicemail</span>
+                </div>
+                <div>
+                  <span class="donut-legend-value negative">287</span>
+                  <span class="donut-legend-sub">12%</span>
+                </div>
+              </div>
+              <div class="donut-legend-item">
+                <div class="donut-legend-left">
+                  <svg class="donut-legend-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                  <span class="donut-legend-label">No Speech</span>
+                </div>
+                <div>
+                  <span class="donut-legend-value negative">1,867</span>
+                  <span class="donut-legend-sub">78%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disposition Waterfall -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Disposition Waterfall</div>
+          <div class="card-badge">All Campaigns</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">Not Interested</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 100%; background: var(--red);">2,296</div></div>
+          <div class="waterfall-pct">48.7%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">No Speech</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 81.3%; background: #0D0D0D;">1,867</div></div>
+          <div class="waterfall-pct">39.6%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">Voicemail</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 12.5%; background: var(--red-muted);">287</div></div>
+          <div class="waterfall-pct">6.1%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">No Answer</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 10.5%; background: #991B1B;">241</div></div>
+          <div class="waterfall-pct">5.1%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">Interested</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 3%; background: var(--green);">10</div></div>
+          <div class="waterfall-pct">0.2%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">Callback Intent</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 3%; background: var(--green-dark);">10</div></div>
+          <div class="waterfall-pct">0.2%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">Processing</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 2%; background: #374151;">4</div></div>
+          <div class="waterfall-pct">0.1%</div>
+        </div>
+        <div class="waterfall-row">
+          <div class="waterfall-label">Do Not Call</div>
+          <div class="waterfall-bar-wrap"><div class="waterfall-bar" style="width: 1%; background: var(--red);"></div></div>
+          <div class="waterfall-pct">0.0%</div>
+        </div>
+      </div>
+
+      <!-- Call Duration & Agent Performance -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" style="margin-bottom: 20px">Call Duration Distribution</div>
+          <div class="duration-row">
+            <div class="duration-label">0-1 min</div>
+            <div class="duration-bar-wrap"><div class="duration-bar" style="width: 95.3%; background: var(--teal);"></div></div>
+            <div class="duration-value">4494</div>
+          </div>
+          <div class="duration-row">
+            <div class="duration-label">1-2 min</div>
+            <div class="duration-bar-wrap"><div class="duration-bar" style="width: 4.3%; background: var(--green);"></div></div>
+            <div class="duration-value">205</div>
+          </div>
+          <div class="duration-row">
+            <div class="duration-label">2-5 min</div>
+            <div class="duration-bar-wrap"><div class="duration-bar" style="width: 2%; background: var(--green-dark);"></div></div>
+            <div class="duration-value">17</div>
+          </div>
+          <div class="duration-row">
+            <div class="duration-label">5-10 min</div>
+            <div class="duration-bar-wrap"><div class="duration-bar" style="width: 1%; background: var(--magenta);"></div></div>
+            <div class="duration-value">1</div>
+          </div>
+          <div class="duration-row">
+            <div class="duration-label">10+ min</div>
+            <div class="duration-bar-wrap"><div class="duration-bar" style="width: 0%; background: #d1d3d4;"></div></div>
+            <div class="duration-value">0</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom: 16px">Agent Performance Summary</div>
+          <table class="agent-table">
+            <thead>
+              <tr>
+                <th>Agent Name</th>
+                <th>Provider</th>
+                <th>Calls</th>
+                <th>Success Rate</th>
+                <th>Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="agent-name">Mel-out</td>
+                <td><span class="provider-badge vapi">Vapi</span></td>
+                <td>0</td>
+                <td><span class="success-rate zero">0.0%</span></td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td class="agent-name">VAPI INBOUND ONE</td>
+                <td><span class="provider-badge vapi">Vapi</span></td>
+                <td>0</td>
+                <td><span class="success-rate zero">0.0%</span></td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td class="agent-name">ELK TEST AGENT TWO</td>
+                <td><span class="provider-badge inspra">Inspra</span></td>
+                <td>0</td>
+                <td><span class="success-rate zero">0.0%</span></td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Gamma</td>
+                <td><span class="provider-badge inspra">Inspra</span></td>
+                <td>12</td>
+                <td><span class="success-rate high">66.7%</span></td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Alpha 2</td>
+                <td><span class="provider-badge inspra">Inspra</span></td>
+                <td>4700</td>
+                <td><span class="success-rate high">100.0%</span></td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Sloane Blankenship</td>
+                <td><span class="provider-badge vapi">Vapi</span></td>
+                <td>0</td>
+                <td><span class="success-rate zero">0.0%</span></td>
+                <td>$0.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Daily Call Volume Chart -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Daily Call Volume</div>
+          <div class="card-badge">Last 30 Days</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="dailyChart"></canvas>
+        </div>
+        <div class="chart-footer">
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot green"></div>
+              Connected
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot red"></div>
+              Not Connected
+            </div>
+          </div>
+          <div class="chart-date">Data as of Apr 15, 2026</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Connected Calls Donut
+    new Chart(document.getElementById('connectedDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Positive', 'Unsuccessful'],
+        datasets: [{
+          data: [20, 2298],
+          backgroundColor: ['#52E22A', '#DC2626'],
+          borderWidth: 0,
+          cutout: '72%'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false }, tooltip: { enabled: true } }
+      }
+    });
+
+    // Not Connected Calls Donut
+    new Chart(document.getElementById('notConnectedDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['No Answer', 'Voicemail', 'No Speech'],
+        datasets: [{
+          data: [241, 287, 1867],
+          backgroundColor: ['#DC2626', '#991B1B', '#0D0D0D'],
+          borderWidth: 0,
+          cutout: '72%'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false }, tooltip: { enabled: true } }
+      }
+    });
+
+    // Daily Call Volume Line Chart
+    const labels = ['Mar 17','Mar 18','Mar 19','Mar 20','Mar 21','Mar 22','Mar 23','Mar 24','Mar 25','Mar 26','Mar 27','Mar 28','Mar 29','Mar 30','Mar 31','Apr 1','Apr 2','Apr 3','Apr 4','Apr 5','Apr 6','Apr 7','Apr 8','Apr 9','Apr 10','Apr 11','Apr 12','Apr 13','Apr 14','Apr 15'];
+    const connected = [0,0,0,0,0,0,0,9,38,414,1058,0,0,422,1,1,0,0,0,0,0,379,0,0,0,0,0,0,0,0];
+    const notConnected = [0,0,0,0,0,0,0,4,77,588,492,0,0,579,24,6,0,0,0,0,7,618,0,0,0,0,0,0,0,0];
+
+    new Chart(document.getElementById('dailyChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Connected',
+            data: connected,
+            borderColor: '#52E22A',
+            backgroundColor: 'rgba(82, 226, 42, 0.08)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#52E22A'
+          },
+          {
+            label: 'Not Connected',
+            data: notConnected,
+            borderColor: '#DC2626',
+            backgroundColor: 'rgba(220, 38, 38, 0.06)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#DC2626'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11, family: 'Inter' }, color: '#9ca3af', maxTicksLimit: 8 }
+          },
+          y: {
+            grid: { color: '#f3f4f6' },
+            ticks: { font: { size: 11, family: 'Inter' }, color: '#9ca3af' },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0D0D0D',
+            titleFont: { family: 'Inter', size: 12 },
+            bodyFont: { family: 'Inter', size: 12 },
+            padding: 12,
+            cornerRadius: 8
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
