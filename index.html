@@ -13,7 +13,7 @@
       --green-light: #edf9ea;
       --green-dark: #339920;
       --black: #0D0D0D;
-      --white: #fafafa;
+      --white: #fafafa
       --bg: #f7f7f8;
       --card-bg: #ffffff;
       --magenta: #8C1CA8;
@@ -138,12 +138,6 @@
       position: relative; overflow: hidden;
     }
     .stat-card:hover { box-shadow: var(--shadow-md); border-color: var(--gray-300); transform: translateY(-1px); }
-    .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-    .stat-card.c-total::before { background: var(--green); }
-    .stat-card.c-duration::before { background: var(--teal); }
-    .stat-card.c-connected::before { background: var(--green-soft); }
-    .stat-card.c-notconn::before { background: var(--red-soft); }
-    .stat-card.c-success::before { background: linear-gradient(90deg, var(--green), var(--green-dark)); }
     .stat-label {
       font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
       display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
