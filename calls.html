@@ -32,558 +32,807 @@
             --slate: #475569;
             --border: rgba(0,0,0,0.06);
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-            --shadow-md: 0 4px 14px rgba(0,0,0,0.06);
-            --radius: 14px;
-            --radius-sm: 10px;
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
         }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--black); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; display: flex; height: 100vh; overflow: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Sidebar */
+        .sidebar { width: 220px; min-width: 220px; background: var(--card-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 0; z-index: 10; }
+        .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+        .logo-text { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--black); }
+        .logo-text span { color: var(--green); }
+        .sidebar-section { padding: 16px 12px 6px; }
+        .sidebar-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); padding: 0 8px; margin-bottom: 6px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); color: var(--gray-600); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s ease; text-decoration: none; border: none; background: none; width: 100%; }
+        .nav-item:hover { background: var(--gray-100); color: var(--gray-800); }
+        .nav-item.active { background: var(--green-light); color: var(--green-dark); font-weight: 600; }
+        .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .nav-item.active svg { color: var(--green); }
+        .sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid var(--border); }
+        .user-info { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.15s; }
+        .user-info:hover { background: var(--gray-100); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .user-details { min-width: 0; }
+        .user-name { font-size: 12px; font-weight: 600; color: var(--gray-800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-role { font-size: 11px; color: var(--gray-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--black);
-            -webkit-font-smoothing: antialiased;
-        }
+        /* Main content */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        .app { display: flex; min-height: 100vh; }
+        /* Topbar */
+        .topbar { height: 52px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+        .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-500); }
+        .breadcrumb a { color: var(--gray-500); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--black); }
+        .breadcrumb-sep { color: var(--gray-300); }
+        .breadcrumb-current { color: var(--black); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .topbar-time { font-size: 12px; color: var(--gray-500); font-weight: 500; }
+        .topbar-actions { display: flex; align-items: center; gap: 8px; }
+        .icon-btn { width: 34px; height: 34px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all 0.15s; }
+        .icon-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+        .icon-btn svg { width: 16px; height: 16px; }
 
-        /* === SIDEBAR === */
-        .sidebar {
-            width: 240px;
-            background: var(--card-bg);
-            border-right: 1px solid var(--gray-200);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; left: 0; bottom: 0;
-            z-index: 10;
-        }
-        .sidebar-logo {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid var(--gray-200);
-            margin-bottom: 8px;
-        }
-        .sidebar-logo svg { height: 28px; }
-        .sidebar-section { padding: 0 12px; margin-bottom: 8px; }
-        .sidebar-section-label {
-            font-size: 12px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.05em; color: var(--gray-500);
-            padding: 14px 12px 8px;
-        }
-        .sidebar-link {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 12px; border-radius: 8px;
-            font-size: 14px; font-weight: 500; color: #666666;
-            text-decoration: none; transition: all 0.15s;
-        }
-        .sidebar-link:hover { background: var(--gray-100); color: var(--gray-800); }
-        .sidebar-link.active {
-            background: var(--slate); color: #ffffff; font-weight: 600;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-        }
-        .sidebar-link svg { width: 20px; height: 20px; opacity: 0.6; flex-shrink: 0; }
-        .sidebar-link.active svg { opacity: 1; color: #ffffff; }
-        .sidebar-user {
-            margin-top: auto; padding: 16px 20px;
-            border-top: 1px solid var(--gray-200);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .user-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--gray-200); display: flex;
-            align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 600; color: var(--gray-500);
-        }
-        .user-email { font-size: 12px; color: var(--gray-700); font-weight: 500; }
+        /* Page body */
+        .page-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
 
-        /* === MAIN CONTENT === */
-        .main-content {
-            margin-left: 240px; flex: 1;
-            padding: 24px 32px 40px;
-        }
-        .breadcrumb {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
-        }
-        .breadcrumb a { font-size: 13px; color: var(--gray-400); text-decoration: none; }
-        .breadcrumb a:hover { color: var(--gray-700); }
-        .breadcrumb span { font-size: 13px; color: var(--gray-400); }
-        .breadcrumb .current { color: var(--gray-700); font-weight: 500; }
-
-        /* === PAGE HEADER === */
-        .page-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .page-header-left {
-            display: flex; align-items: center; gap: 16px;
-        }
-        .page-title { font-size: 22px; font-weight: 700; color: var(--black); }
-        .stat-pills {
-            display: flex; align-items: center; gap: 10px;
-        }
-        .stat-pill {
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 12px; border-radius: 20px;
-            font-size: 12px; font-weight: 500;
-            background: var(--gray-100); color: var(--gray-600);
-            border: 1px solid var(--gray-200);
-        }
-        .stat-pill.green {
-            background: var(--green-light); color: var(--green-dark);
-            border-color: rgba(82,226,42,0.2);
-        }
+        /* Page header */
+        .page-header { display: flex; align-items: flex-start; justify-content: space-between; }
+        .page-title-group {}
+        .page-title { font-size: 22px; font-weight: 700; color: var(--black); letter-spacing: -0.3px; margin-bottom: 8px; }
+        .stats-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .stat-pill { display: flex; align-items: center; gap: 6px; background: var(--card-bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 600; color: var(--gray-700); box-shadow: var(--shadow-sm); }
         .stat-pill svg { width: 14px; height: 14px; }
+        .stat-pill.green { color: var(--green-dark); border-color: var(--green); background: var(--green-light); }
+        .stat-pill.green svg { color: var(--green); }
+        .stat-pill.teal { color: var(--teal); }
+        .export-btn { display: flex; align-items: center; gap: 7px; background: var(--card-bg); border: 1.5px solid var(--border); padding: 9px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--gray-700); cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow-sm); }
+        .export-btn:hover { border-color: var(--gray-300); box-shadow: var(--shadow-md); }
+        .export-btn svg { width: 15px; height: 15px; color: var(--gray-500); }
 
-        .page-header-right {
-            display: flex; align-items: center; gap: 12px;
-        }
-        .time-display {
-            font-size: 12px; color: var(--gray-400); font-weight: 500;
-        }
-        .btn-icon {
-            width: 34px; height: 34px; border-radius: 8px;
-            border: 1px solid var(--gray-200); background: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.15s; color: var(--gray-500);
-        }
-        .btn-icon:hover { border-color: var(--gray-300); color: var(--gray-700); }
-        .btn-export {
-            display: flex; align-items: center; gap: 6px;
-            padding: 7px 16px; border-radius: 8px;
-            border: 1px solid var(--green); background: white;
-            font-size: 13px; font-weight: 500; color: var(--green-dark);
-            cursor: pointer; transition: all 0.15s;
-        }
-        .btn-export:hover { background: var(--green-light); }
-        .btn-export svg { width: 16px; height: 16px; }
+        /* Filters bar */
+        .filters-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .search-box { position: relative; flex: 1; min-width: 240px; max-width: 380px; }
+        .search-box svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--gray-400); pointer-events: none; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; background: var(--card-bg); color: var(--gray-800); outline: none; transition: border 0.15s; font-family: inherit; }
+        .search-box input:focus { border-color: var(--green); }
+        .search-box input::placeholder { color: var(--gray-400); }
+        .filter-select { display: flex; align-items: center; gap: 7px; background: var(--card-bg); border: 1.5px solid var(--border); padding: 7px 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--gray-700); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+        .filter-select:hover { border-color: var(--gray-300); }
+        .filter-select svg { width: 14px; height: 14px; color: var(--gray-400); }
+        .date-filter { display: flex; align-items: center; gap: 6px; background: var(--card-bg); border: 1.5px solid var(--border); padding: 7px 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--gray-700); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+        .date-filter:hover { border-color: var(--gray-300); }
+        .date-filter svg { width: 14px; height: 14px; color: var(--gray-400); }
+        .refresh-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; color: var(--gray-500); transition: all 0.15s; margin-left: auto; }
+        .refresh-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+        .refresh-btn svg { width: 15px; height: 15px; }
 
-        /* === FILTERS BAR === */
-        .filters-bar {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 20px; flex-wrap: wrap;
-        }
-        .search-input {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 14px; border-radius: 8px;
-            border: 1px solid var(--gray-200); background: white;
-            min-width: 220px; transition: all 0.15s;
-        }
-        .search-input:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(82,226,42,0.1); }
-        .search-input svg { width: 16px; height: 16px; color: var(--gray-400); flex-shrink: 0; }
-        .search-input input {
-            border: none; outline: none; background: none;
-            font-size: 13px; color: var(--black); font-family: inherit;
-            width: 100%;
-        }
-        .search-input input::placeholder { color: var(--gray-400); }
-
-        .filter-btn {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 14px; border-radius: 8px;
-            border: 1px solid var(--gray-200); background: white;
-            font-size: 13px; color: var(--gray-600);
-            cursor: pointer; transition: all 0.15s; font-family: inherit;
-        }
-        .filter-btn:hover { border-color: var(--gray-300); background: var(--gray-100); }
-        .filter-btn svg { width: 14px; height: 14px; color: var(--gray-400); }
-
-        /* === TABLE === */
-        .calls-table-wrap {
-            background: var(--card-bg);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-        .calls-table {
-            width: 100%; border-collapse: collapse;
-        }
-        .calls-table thead th {
-            text-align: left; font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.05em;
-            color: var(--gray-400); padding: 12px 16px;
-            border-bottom: 1px solid var(--gray-200);
-            background: var(--gray-100);
-            cursor: pointer; user-select: none;
-            transition: color 0.15s;
-        }
-        .calls-table thead th:hover { color: var(--gray-600); }
-        .calls-table thead th svg {
-            width: 12px; height: 12px; vertical-align: middle;
-            margin-left: 4px; opacity: 0.4;
-        }
-        .calls-table tbody tr {
-            transition: background 0.1s;
-        }
-        .calls-table tbody tr:hover { background: var(--gray-100); }
-        .calls-table tbody td {
-            padding: 12px 16px; font-size: 13px;
-            color: var(--gray-600); border-bottom: 1px solid var(--gray-100);
-            vertical-align: middle;
-        }
-
-        .call-id-cell {
-            display: flex; align-items: center; gap: 10px;
-        }
-        .call-icon {
-            width: 28px; height: 28px; border-radius: 6px;
-            background: var(--green-light); color: var(--green-dark);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .call-icon svg { width: 14px; height: 14px; }
-        .call-id-text {
-            font-weight: 500; color: var(--gray-700); font-size: 13px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-        }
-        .copy-btn {
-            width: 22px; height: 22px; border-radius: 4px;
-            border: none; background: transparent;
-            color: var(--gray-400); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.15s;
-        }
+        /* Table */
+        .table-wrapper { background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+        .table-scroll { overflow-x: auto; overflow-y: auto; flex: 1; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        thead th { padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); background: var(--gray-100); border-bottom: 1px solid var(--border); white-space: nowrap; user-select: none; cursor: pointer; }
+        thead th:hover { background: var(--gray-200); color: var(--gray-700); }
+        thead th .sort-icon { display: inline-flex; align-items: center; margin-left: 4px; opacity: 0.5; }
+        thead th.sorted .sort-icon { opacity: 1; color: var(--green-dark); }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f8fffe; }
+        tbody tr:hover .call-id-text { color: var(--green-dark); }
+        tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-700); vertical-align: middle; }
+        .cell-call-id { display: flex; align-items: center; gap: 8px; }
+        .call-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--green-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .call-icon svg { width: 13px; height: 13px; color: var(--green); }
+        .call-id-text { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; font-weight: 600; color: var(--gray-700); letter-spacing: 0.02em; }
+        .copy-btn { width: 22px; height: 22px; border-radius: 4px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-400); opacity: 0; transition: all 0.15s; }
+        tbody tr:hover .copy-btn { opacity: 1; }
         .copy-btn:hover { background: var(--gray-200); color: var(--gray-600); }
-        .copy-btn svg { width: 13px; height: 13px; }
+        .copy-btn svg { width: 11px; height: 11px; }
+        .cell-time { color: var(--gray-500); }
+        .time-date { font-weight: 600; color: var(--gray-700); margin-right: 4px; }
+        .cell-from { font-weight: 600; color: var(--gray-800); }
+        .cell-to { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: var(--gray-600); }
+        .cell-duration { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--gray-700); }
+        .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+        .badge-notInterested { background: #FEF2F2; color: #991B1B; }
+        .badge-voiceMail { background: #EFF6FF; color: #1D4ED8; }
+        .badge-noSpeech { background: #F5F3FF; color: #5B21B6; }
+        .badge-noAnswer { background: #FFFBEB; color: #92400E; border: 1px solid #FCD34D; }
+        .badge-interested { background: var(--green-light); color: var(--green-dark); border: 1px solid #86efac; }
+        .badge-IVR { background: #F0FDF4; color: #166534; }
+        .badge-default { background: var(--gray-100); color: var(--gray-600); }
 
-        .from-cell { font-weight: 500; color: var(--black); }
+        /* Pagination */
+        .pagination-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--gray-100); }
+        .pagination-info { font-size: 12px; color: var(--gray-500); font-weight: 500; }
+        .pagination-pages { display: flex; align-items: center; gap: 4px; }
+        .page-btn { width: 30px; height: 30px; border-radius: var(--radius-sm); border: 1px solid transparent; background: none; font-size: 12px; font-weight: 600; color: var(--gray-600); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .page-btn:hover { background: var(--gray-200); color: var(--gray-800); }
+        .page-btn.active { background: var(--green); color: white; border-color: var(--green); }
+        .page-btn.dots { cursor: default; color: var(--gray-400); }
+        .page-btn.dots:hover { background: none; }
 
-        .disposition-badge {
-            display: inline-block; padding: 3px 10px;
-            border-radius: 20px; font-size: 11px; font-weight: 600;
-        }
-        .disposition-badge.not-interested {
-            background: var(--gray-100); color: var(--gray-600);
-        }
-        .disposition-badge.voicemail {
-            background: #EEF2FF; color: var(--indigo);
-        }
-        .disposition-badge.no-speech {
-            background: #F1F5F9; color: var(--slate);
-        }
-        .disposition-badge.no-answer {
-            background: #FFFBEB; color: var(--amber);
-        }
-        .disposition-badge.ivr {
-            background: #EFF6FF; color: var(--blue);
-        }
-        .disposition-badge.interested {
-            background: var(--green-light); color: var(--green-dark);
-        }
-        .disposition-badge.processing {
-            background: #FFF7ED; color: #EA580C;
-        }
+        /* MODAL OVERLAY */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: all; }
 
-        /* === PAGINATION === */
-        .table-footer {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 16px; border-top: 1px solid var(--gray-200);
-            background: var(--gray-100);
-        }
-        .table-footer-left {
-            font-size: 12px; color: var(--gray-500);
-        }
-        .pagination {
-            display: flex; align-items: center; gap: 4px;
-        }
-        .page-btn {
-            width: 30px; height: 30px; border-radius: 6px;
-            border: 1px solid var(--gray-200); background: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 12px; font-weight: 500;
-            color: var(--gray-600); transition: all 0.15s;
-        }
-        .page-btn:hover { border-color: var(--gray-300); background: var(--gray-100); }
-        .page-btn.active {
-            background: var(--slate); color: white; border-color: var(--slate);
-        }
-        .page-btn.disabled {
-            opacity: 0.4; cursor: default; pointer-events: none;
-        }
-        .page-btn svg { width: 14px; height: 14px; }
+        /* MODAL */
+        .modal { background: var(--card-bg); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); width: 100%; max-width: 1020px; max-height: 88vh; display: flex; flex-direction: column; transform: scale(0.96) translateY(8px); transition: transform 0.2s ease; overflow: hidden; }
+        .modal-overlay.visible .modal { transform: scale(1) translateY(0); }
+
+        /* Modal header */
+        .modal-header { padding: 20px 24px 0; flex-shrink: 0; }
+        .modal-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .modal-title { font-size: 16px; font-weight: 700; color: var(--black); display: flex; align-items: center; gap: 10px; }
+        .modal-title-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--green-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .modal-title-icon svg { width: 16px; height: 16px; color: var(--green); }
+        .modal-title-text { display: flex; flex-direction: column; gap: 2px; }
+        .modal-title-main { font-size: 15px; font-weight: 700; color: var(--black); }
+        .modal-title-sub { font-size: 12px; color: var(--gray-500); font-weight: 400; }
+        .modal-actions { display: flex; align-items: center; gap: 8px; }
+        .modal-action-btn { width: 34px; height: 34px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all 0.15s; }
+        .modal-action-btn:hover { background: var(--gray-100); color: var(--gray-700); border-color: var(--gray-300); }
+        .modal-action-btn svg { width: 15px; height: 15px; }
+        .modal-close { width: 34px; height: 34px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all 0.15s; }
+        .modal-close:hover { background: #FEF2F2; color: var(--red); border-color: #FECACA; }
+        .modal-close svg { width: 16px; height: 16px; }
+        .modal-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); }
+        .modal-tab { padding: 10px 20px; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+        .modal-tab.active { color: var(--green-dark); border-bottom-color: var(--green); }
+        .modal-tab:hover:not(.active) { color: var(--gray-700); }
+
+        /* Modal body */
+        .modal-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+        .modal-left { flex: 1; padding: 20px 24px; overflow-y: auto; border-right: 1px solid var(--border); min-width: 0; }
+        .modal-right { flex: 1.1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+        .transcript-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .transcript-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-500); }
+        .copy-transcript-btn { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--gray-500); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm); transition: all 0.15s; }
+        .copy-transcript-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+        .copy-transcript-btn svg { width: 13px; height: 13px; }
+        .transcript-scroll { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+        .transcript-bubble { display: flex; flex-direction: column; gap: 4px; max-width: 88%; }
+        .transcript-bubble.agent { align-self: flex-start; }
+        .transcript-bubble.customer { align-self: flex-end; }
+        .bubble-meta { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+        .bubble-meta svg { width: 12px; height: 12px; }
+        .bubble-meta.agent { color: var(--gray-500); }
+        .bubble-meta.customer { color: var(--green-dark); justify-content: flex-end; }
+        .bubble-time { font-size: 10px; color: var(--gray-400); font-weight: 400; margin-left: auto; }
+        .bubble-text { padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+        .agent .bubble-text { background: var(--gray-100); color: var(--gray-800); border-radius: 4px 12px 12px 12px; }
+        .customer .bubble-text { background: var(--green); color: white; border-radius: 12px 4px 12px 12px; font-weight: 500; }
+
+        /* Detail sections */
+        .detail-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .detail-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .detail-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-500); margin-bottom: 6px; }
+        .detail-value { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+        .detail-value.outcome-ni { color: var(--red); }
+        .detail-value.outcome-interested { color: var(--green-dark); }
+        .detail-time { font-size: 13px; color: var(--gray-600); font-weight: 400; }
+        .detail-body { font-size: 13px; color: var(--gray-600); line-height: 1.65; }
+
+        /* Variables tab */
+        .variables-table { width: 100%; }
+        .var-row { display: flex; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+        .var-row:last-child { border-bottom: none; }
+        .var-key { font-size: 12px; font-weight: 600; color: var(--gray-500); width: 140px; flex-shrink: 0; padding-top: 1px; }
+        .var-val { font-size: 12px; color: var(--gray-700); font-family: 'SF Mono', 'Fira Code', monospace; word-break: break-all; }
+
+        /* Modal footer */
+        .modal-footer { padding: 12px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--gray-100); flex-shrink: 0; }
+        .audio-player { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .play-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--green); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.15s; flex-shrink: 0; box-shadow: 0 2px 8px rgba(82,226,42,0.35); }
+        .play-btn:hover { background: var(--green-dark); transform: scale(1.05); }
+        .play-btn svg { width: 14px; height: 14px; }
+        .speed-btns { display: flex; align-items: center; gap: 3px; }
+        .speed-btn { padding: 4px 8px; border-radius: 4px; border: 1.5px solid var(--border); background: none; font-size: 11px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all 0.15s; }
+        .speed-btn:hover { border-color: var(--green); color: var(--green-dark); }
+        .speed-btn.active { background: var(--green-light); color: var(--green-dark); border-color: var(--green); }
+        .volume-icon { color: var(--gray-400); width: 15px; height: 15px; cursor: pointer; transition: color 0.15s; }
+        .volume-icon:hover { color: var(--gray-600); }
+        .volume-slider { -webkit-appearance: none; appearance: none; width: 80px; height: 4px; border-radius: 2px; background: var(--gray-300); outline: none; cursor: pointer; }
+        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--green); cursor: pointer; }
+        .progress-wrap { flex: 1; display: flex; align-items: center; gap: 8px; }
+        .progress-time { font-size: 11px; font-weight: 600; color: var(--gray-500); font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .progress-bar-outer { flex: 1; height: 4px; background: var(--gray-200); border-radius: 2px; cursor: pointer; position: relative; }
+        .progress-bar-inner { height: 100%; background: var(--green); border-radius: 2px; width: 0%; transition: width 0.1s; }
+        .progress-dot { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--green); border: 2px solid white; box-shadow: 0 0 0 1px var(--green); left: 0%; transition: left 0.1s; }
+        .nav-counter { font-size: 12px; font-weight: 600; color: var(--gray-500); white-space: nowrap; padding: 0 4px; }
+        .nav-counter span { color: var(--green-dark); }
+        .nav-next-btn { display: flex; align-items: center; gap: 5px; background: var(--green); color: white; border: none; padding: 8px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+        .nav-next-btn:hover { background: var(--green-dark); }
+        .nav-next-btn svg { width: 13px; height: 13px; }
     </style>
 </head>
 <body>
-    <div class="app">
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <svg viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <text x="0" y="26" font-family="Inter" font-weight="800" font-size="28" fill="#0D0D0D">
-                        <tspan fill="#52E22A">i</tspan>NSPR<tspan fill="#52E22A">A</tspan>
-                    </text>
-                </svg>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-section-label">Workspace</div>
-                <a href="index.html" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
-                    Analytics Dashboard
-                </a>
-                <a href="calls.html" class="sidebar-link active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-                    Calls
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"></path><path d="M8 6v8"></path></svg>
-                    Campaigns
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
-                    Agents
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
-                    Knowledge Base
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg>
-                    Call Analysis Criteria
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"></path><path d="M9 13a4.5 4.5 0 0 0 3-4"></path><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"></path><path d="M3.477 10.896a4 4 0 0 1 .585-.396"></path><path d="M6 18a4 4 0 0 1-1.967-.516"></path><path d="M12 13h4"></path><path d="M12 18h6a2 2 0 0 1 2 2v1"></path><path d="M12 8h8"></path><path d="M16 8V5a2 2 0 0 1 2-2"></path><circle cx="16" cy="13" r=".5"></circle><circle cx="18" cy="3" r=".5"></circle><circle cx="20" cy="21" r=".5"></circle><circle cx="20" cy="8" r=".5"></circle></svg>
-                    Prompt Analysis
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2a9 9 0 0 1 9 9"></path><path d="M13 6a5 5 0 0 1 5 5"></path><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-                    Telephony
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path></svg>
-                    Correspondence
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    Settings
-                </a>
-                <div class="sidebar-section-label" style="margin-top: 16px;">Organization</div>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg>
-                    Organization
-                </a>
-            </div>
-            <div class="sidebar-user">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-text">i<span>N</span>SPRA</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Workspace</div>
+            <a class="nav-item" href="index.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Analytics Dashboard
+            </a>
+            <a class="nav-item active" href="calls.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014 12a19.79 19.79 0 01-3-8.65A2 2 0 012.92 1.37h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.7-1.7a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                Calls
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                Campaigns
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0114 0v2"/></svg>
+                Agents
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                Knowledge Base
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                Call Analysis Criteria
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Prompt Analysis
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Telephony
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                Message Hub
+            </a>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115 19.07"/></svg>
+                Settings
+            </a>
+        </div>
+        <div class="sidebar-section" style="margin-top:8px">
+            <div class="sidebar-section-label">Organization</div>
+            <a class="nav-item" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+                Organization
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-info">
                 <div class="user-avatar">G</div>
-                <div style="flex: 1; min-width: 0;">
-                    <div class="user-email">genius365@mailin...</div>
-                    <div style="font-size: 11px; color: var(--gray-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">genius365@mailinator....</div>
-                </div>
-                <div style="cursor: pointer; padding: 4px; color: var(--gray-400); flex-shrink: 0;">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+                <div class="user-details">
+                    <div class="user-name">genius365@mailin...</div>
+                    <div class="user-role">genius365@mailinato...</div>
                 </div>
             </div>
-        </aside>
+        </div>
+    </aside>
 
-        <main class="main-content">
+    <!-- MAIN -->
+    <div class="main">
+        <!-- Topbar -->
+        <div class="topbar">
             <div class="breadcrumb">
-                <a href="index.html">Home</a><span>/</span><span class="current">Calls</span>
+                <a href="index.html">Home</a>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-current">Calls</span>
             </div>
+            <div class="topbar-right">
+                <span class="topbar-time" id="topbar-time"></span>
+                <div class="topbar-actions">
+                    <button class="icon-btn" title="Settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115 19.07"/></svg>
+                    </button>
+                    <button class="icon-btn" title="Notifications">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    </button>
+                    <button class="icon-btn" title="Toggle theme">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-            <!-- Page Header -->
+        <!-- Page body -->
+        <div class="page-body">
+            <!-- Page header -->
             <div class="page-header">
-                <div class="page-header-left">
-                    <h1 class="page-title">Call Logs</h1>
-                    <div class="stat-pills">
+                <div class="page-title-group">
+                    <div class="page-title">Call Logs</div>
+                    <div class="stats-row">
                         <div class="stat-pill">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
                             1,000 total
                         </div>
                         <div class="stat-pill green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014 12a19.79 19.79 0 01-3-8.65A2 2 0 012.92 1.37h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.7-1.7a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
                             1000
                         </div>
-                        <div class="stat-pill">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <div class="stat-pill teal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
                             0:24 avg
                         </div>
                     </div>
                 </div>
-                <div class="page-header-right">
-                    <span class="time-display">10:50 AM</span>
-                    <button class="btn-icon" title="Refresh">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-                    </button>
-                    <button class="btn-export">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Export
-                    </button>
-                </div>
+                <button class="export-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export
+                </button>
             </div>
 
             <!-- Filters -->
             <div class="filters-bar">
-                <div class="search-input">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <input type="text" placeholder="Search calls...">
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="text" placeholder="Search calls..." id="search-input" />
                 </div>
-                <button class="filter-btn">
+                <div class="date-filter">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     Apr 15 – Apr 15
-                </button>
-                <button class="filter-btn">
+                </div>
+                <div class="filter-select" id="type-filter">
                     All Types
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-                </button>
-                <button class="filter-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                </div>
+                <div class="filter-select" id="disposition-filter">
                     All Dispositions
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                </div>
+                <button class="refresh-btn" title="Refresh">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
                 </button>
             </div>
 
-            <!-- Calls Table -->
-            <div class="calls-table-wrap">
-                <table class="calls-table">
-                    <thead>
-                        <tr>
-                            <th>Call ID <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
-                            <th>Time <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></th>
-                            <th>From <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
-                            <th>To <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
-                            <th>Duration <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
-                            <th>Disposition <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">d2104c5...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61404086404</td>
-                            <td>0:28</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">2938ca6...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61431094823</td>
-                            <td>0:23</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">c50e272...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61431711934</td>
-                            <td>0:35</td>
-                            <td><span class="disposition-badge voicemail">voiceMail</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">a48489c...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61418406591</td>
-                            <td>0:22</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">eec4eab...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61412238475</td>
-                            <td>0:16</td>
-                            <td><span class="disposition-badge no-speech">noSpeech</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">e9a7bbf...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61405195463</td>
-                            <td>0:21</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">0e0c1d1...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61403030599</td>
-                            <td>0:26</td>
-                            <td><span class="disposition-badge voicemail">voiceMail</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">4b5a618...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61400811820</td>
-                            <td>0:23</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">0970706...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61409440329</td>
-                            <td>0:00</td>
-                            <td><span class="disposition-badge no-answer">noAnswer</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">0262226...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61423317832</td>
-                            <td>0:32</td>
-                            <td><span class="disposition-badge voicemail">voiceMail</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">95e0555...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61438544817</td>
-                            <td>0:23</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">1a2a6f5...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61409490627</td>
-                            <td>0:29</td>
-                            <td><span class="disposition-badge ivr">IVR</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">7bc3d92...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:50 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61402887143</td>
-                            <td>0:18</td>
-                            <td><span class="disposition-badge no-speech">noSpeech</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">f4e1a08...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:49 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61415332901</td>
-                            <td>0:31</td>
-                            <td><span class="disposition-badge interested">interested</span></td>
-                        </tr>
-                        <tr>
-                            <td><div class="call-id-cell"><div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="call-id-text">8d29e7c...</span><button class="copy-btn" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></td>
-                            <td>Apr 15  8:49 PM</td>
-                            <td class="from-cell">Inspra Test Agent</td>
-                            <td>+61407621588</td>
-                            <td>0:19</td>
-                            <td><span class="disposition-badge not-interested">notInterested</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Table Footer / Pagination -->
-                <div class="table-footer">
-                    <div class="table-footer-left">Showing 1-15 of 1,000 calls</div>
-                    <div class="pagination">
-                        <button class="page-btn disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn">2</button>
-                        <button class="page-btn">3</button>
-                        <button class="page-btn">4</button>
-                        <button class="page-btn">5</button>
-                        <button class="page-btn">...</button>
-                        <button class="page-btn">67</button>
-                        <button class="page-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
-                    </div>
+            <!-- Table -->
+            <div class="table-wrapper">
+                <div class="table-scroll">
+                    <table id="calls-table">
+                        <thead>
+                            <tr>
+                                <th class="sorted">CALL ID <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span></th>
+                                <th>TIME <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span></th>
+                                <th>FROM <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span></th>
+                                <th>TO <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span></th>
+                                <th>DURATION <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span></th>
+                                <th>DISPOSITION <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="calls-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-bar">
+                    <div class="pagination-info" id="pagination-info">Showing 1-15 of 1,000 calls</div>
+                    <div class="pagination-pages" id="pagination-pages"></div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <div class="modal-title">
+                        <div class="modal-title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014 12a19.79 19.79 0 01-3-8.65A2 2 0 012.92 1.37h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.7-1.7a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                        </div>
+                        <div class="modal-title-text">
+                            <span class="modal-title-main" id="modal-title-main">Summary Alpha 2 | +61370566661</span>
+                            <span class="modal-title-sub" id="modal-title-sub">Apr 16 2026 · 2:29 AM · 0:28 duration</span>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-action-btn" title="Copy call ID">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                        </button>
+                        <button class="modal-action-btn" title="Volume">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+                        </button>
+                        <button class="modal-close" onclick="closeModal()" title="Close">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-tabs">
+                    <div class="modal-tab active" onclick="switchTab('details')" id="tab-details">Call Details</div>
+                    <div class="modal-tab" onclick="switchTab('variables')" id="tab-variables">Variables</div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- Left panel -->
+                <div class="modal-left" id="modal-left">
+                    <!-- Details tab content -->
+                    <div id="details-content">
+                        <div class="detail-section">
+                            <div class="detail-label">Call Outcome</div>
+                            <div class="detail-value outcome-ni" id="detail-outcome">Not Interested</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Call Overview</div>
+                            <div class="detail-time" id="detail-overview">Time: Apr 16 2026 02:29</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Disposition Reason</div>
+                            <div class="detail-body" id="detail-disposition-reason">The customer repeatedly responds with 'Hello' without engaging with the agent's questions or the offering, showing implicit disinterest through disengagement and no progression toward a next step.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Summary</div>
+                            <div class="detail-body" id="detail-summary">The call was initiated by Alex, an AI assistant from Inspra AI, attempting to engage the user in a conversation. The user responded with multiple greetings but did not engage further, and the call ended without a substantive exchange.</div>
+                        </div>
+                    </div>
+                    <!-- Variables tab content -->
+                    <div id="variables-content" style="display:none">
+                        <div class="variables-table" id="variables-list"></div>
+                    </div>
+                </div>
+                <!-- Right panel: transcript -->
+                <div class="modal-right">
+                    <div class="transcript-header">
+                        <span class="transcript-label">Transcript</span>
+                        <button class="copy-transcript-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            Copy
+                        </button>
+                    </div>
+                    <div class="transcript-scroll" id="transcript-scroll"></div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="modal-footer">
+                <div class="audio-player">
+                    <button class="play-btn" id="play-btn" onclick="togglePlay()">
+                        <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                    <div class="speed-btns">
+                        <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
+                        <button class="speed-btn active" onclick="setSpeed(1)" id="speed-1x">1x</button>
+                        <button class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
+                        <button class="speed-btn" onclick="setSpeed(2)">2x</button>
+                    </div>
+                    <svg class="volume-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+                    <input type="range" class="volume-slider" min="0" max="100" value="75">
+                    <div class="progress-wrap">
+                        <span class="progress-time">00:00</span>
+                        <div class="progress-bar-outer" onclick="seekAudio(event)">
+                            <div class="progress-bar-inner" id="progress-bar"></div>
+                            <div class="progress-dot" id="progress-dot"></div>
+                        </div>
+                        <span class="progress-time" id="duration-time">00:30</span>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                    <span class="nav-counter">Call <span id="call-nav-current">1</span> of <span id="call-nav-total">20</span></span>
+                    <button class="nav-next-btn" onclick="nextCall()">
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ===== DATA =====
+    const callsData = [
+        { id: 'd2104c5a-f1b2-4e3d-9c0a-1b2c3d4e5f6a', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61404086404', duration: '0:28', disposition: 'notInterested', outcome: 'Not Interested', summary: 'The customer did not engage with the AI agent and expressed disinterest shortly after the call began. The agent attempted to introduce the service but received a curt dismissal.', dispositionReason: 'Customer explicitly stated they are not interested and ended the call before meaningful conversation could occur.', variables: { agentId: 'agt-001-alpha', batchDocId: 'batchtest-1776250742684-9wqs26', campaignId: 'camp-2024-q4' } },
+        { id: '2938ca6b-a2c3-4f4e-8d1b-2c3d4e5f6a7b', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61431094823', duration: '0:23', disposition: 'notInterested', outcome: 'Not Interested', summary: 'Brief call with no substantive engagement. Customer did not respond to the AI agent's questions and terminated the call quickly.', dispositionReason: 'No engagement from customer side. Call was terminated prematurely with no interest expressed.', variables: { agentId: 'agt-001-alpha', batchDocId: 'batchtest-1776250742684-9wqs26' } },
+        { id: 'c50e272c-b3d4-4g5f-7e2c-3d4e5f6a7b8c', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61431711934', duration: '0:35', disposition: 'voiceMail', outcome: 'Voicemail', summary: 'Call reached voicemail. AI agent left a brief, professional message introducing the service and requesting a callback.', dispositionReason: 'No live answer. Voicemail detected and message left successfully.', variables: { agentId: 'agt-001-alpha', batchDocId: 'batchtest-1776250742684-9wqs27' } },
+        { id: 'a48489c4-c4e5-4h6g-6f3d-4e5f6a7b8c9d', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61418406591', duration: '0:22', disposition: 'notInterested', outcome: 'Not Interested', summary: 'Customer responded briefly but indicated no interest in the offering. Call ended without further discussion.', dispositionReason: 'Customer stated disinterest immediately upon hearing the agent introduction.', variables: { agentId: 'agt-002-beta', batchDocId: 'batchtest-1776250742684-9wqs28' } },
+        { id: 'eec4eab5-d5f6-4i7h-5g4e-5f6a7b8c9d0e', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61412238475', duration: '0:16', disposition: 'noSpeech', outcome: 'No Speech', summary: 'Call connected but no speech was detected from the customer side. The line was silent throughout.', dispositionReason: 'No speech detected on customer end. Possible connectivity issue or customer did not respond.', variables: { agentId: 'agt-002-beta', batchDocId: 'batchtest-1776250742684-9wqs29' } },
+        { id: 'e9a7bbf6-e6a7-4j8i-4h5f-6a7b8c9d0e1f', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61405195463', duration: '0:21', disposition: 'notInterested', outcome: 'Not Interested', summary: 'Standard not-interested outcome. Customer declined the offer politely but firmly.', dispositionReason: 'Customer politely declined and requested no further contact.', variables: { agentId: 'agt-003-gamma', batchDocId: 'batchtest-1776250742684-9wqs30' } },
+        { id: '0e0c1d17-f7b8-4k9j-3i6g-7b8c9d0e1f2a', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61403030599', duration: '0:26', disposition: 'voiceMail', outcome: 'Voicemail', summary: 'Voicemail detected after 4 rings. Professional message left with callback number.', dispositionReason: 'Voicemail system detected. Message left per campaign protocol.', variables: { agentId: 'agt-003-gamma', batchDocId: 'batchtest-1776250742684-9wqs31' } },
+        { id: '4b5a6188-a8c9-4l0k-2j7h-8c9d0e1f2a3b', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61400811820', duration: '0:23', disposition: 'notInterested', outcome: 'Not Interested', summary: 'Short interaction ending in no interest expressed by the prospect.', dispositionReason: 'Customer rejected offer without hearing details. Marked as not interested.', variables: { agentId: 'agt-001-alpha', batchDocId: 'batchtest-1776250742684-9wqs32' } },
+        { id: '09707069-b9d0-4m1l-1k8i-9d0e1f2a3b4c', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61409440329', duration: '0:00', disposition: 'noAnswer', outcome: 'No Answer', summary: 'Call was not answered. No connection established with the prospect.', dispositionReason: 'Phone rang but was not answered within the configured timeout period.', variables: { agentId: 'agt-002-beta', batchDocId: 'batchtest-1776250742684-9wqs33' } },
+        { id: '02622260-c0e1-4n2m-0l9j-0e1f2a3b4c5d', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61423317832', duration: '0:32', disposition: 'voiceMail', outcome: 'Voicemail', summary: 'Voicemail picked up after 5 rings. Concise, brand-aligned message was delivered.', dispositionReason: 'Live answer not detected. Voicemail message delivered successfully.', variables: { agentId: 'agt-003-gamma', batchDocId: 'batchtest-1776250742684-9wqs34' } },
+        { id: '95e05551-d1f2-4o3n-9m0k-1f2a3b4c5d6e', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61438544817', duration: '0:23', disposition: 'notInterested', outcome: 'Not Interested', summary: 'Customer indicated they were on a do-not-call list and asked to be removed.', dispositionReason: 'Customer requested removal from contact list. DNC flag applied.', variables: { agentId: 'agt-001-alpha', batchDocId: 'batchtest-1776250742684-9wqs35' } },
+        { id: '1a2a6f52-e2a3-4p4o-8n1l-2a3b4c5d6e7f', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61409490627', duration: '0:29', disposition: 'IVR', outcome: 'IVR Detected', summary: 'Call was answered by an IVR (Interactive Voice Response) system rather than a live person.', dispositionReason: 'IVR system detected. Call handed off per IVR protocol.', variables: { agentId: 'agt-004-delta', batchDocId: 'batchtest-1776250742684-9wqs36', ivr_detected: 'true' } },
+        { id: '7bc3d923-f3b4-4q5p-7o2m-3b4c5d6e7f8a', time: 'Apr 15 8:50 PM', from: 'Inspra Test Agent', to: '+61402887143', duration: '0:18', disposition: 'noSpeech', outcome: 'No Speech', summary: 'Silent call with no customer response. Agent issued multiple prompts without any speech detected.', dispositionReason: 'No speech detected despite multiple agent prompts. Call terminated by system.', variables: { agentId: 'agt-004-delta', batchDocId: 'batchtest-1776250742684-9wqs37' } },
+        { id: 'f4e1a084-a4c5-4r6q-6p3n-4c5d6e7f8a9b', time: 'Apr 15 8:49 PM', from: 'Inspra Test Agent', to: '+61415332901', duration: '0:31', disposition: 'interested', outcome: 'Interested', summary: 'Positive engagement. Customer expressed genuine interest in the product and requested more information. Follow-up scheduled.', dispositionReason: 'Customer actively engaged, asked questions, and indicated willingness to learn more. Qualified lead.', variables: { agentId: 'agt-001-alpha', batchDocId: 'batchtest-1776250742684-9wqs38', lead_score: '8/10' } },
+        { id: '8d29e7c5-b5d6-4s7r-5q4o-5d6e7f8a9b0c', time: 'Apr 15 8:49 PM', from: 'Inspra Test Agent', to: '+61407621588', duration: '0:19', disposition: 'notInterested', outcome: 'Not Interested', summary: 'Customer was not interested and ended the call before the agent could complete the introduction.', dispositionReason: 'Call dropped by customer at 19 seconds. No engagement opportunity.', variables: { agentId: 'agt-002-beta', batchDocId: 'batchtest-1776250742684-9wqs39' } }
+    ];
+
+    const transcriptsByDisposition = {
+        notInterested: [
+            { role: 'agent', text: 'Hi, This is Alex, an AI assistant from Inspra AI on a recorded line. I promise to be much faster than a human caller. Do you have a minute?', time: '00:01' },
+            { role: 'customer', text: 'Hello?', time: '00:14' },
+            { role: 'agent', text: 'Hi there! Do you have a minute to chat?', time: '00:16' },
+            { role: 'customer', text: 'Hello. Hello?', time: '00:21' },
+            { role: 'agent', text: 'Are you still there?', time: '00:23' },
+            { role: 'customer', text: 'Hello.', time: '00:26' },
+            { role: 'agent', text: 'Got it. So the reason I'm calling today is to share some exciting information. Are you available?', time: '00:28' },
+            { role: 'customer', text: 'Not interested.', time: '00:42' },
+        ],
+        voiceMail: [
+            { role: 'agent', text: 'Hi, this is Alex from Inspra AI. I'm calling to share some exciting news about our AI-powered solutions. Please call us back at your convenience. Thank you!', time: '00:01' },
+        ],
+        noSpeech: [
+            { role: 'agent', text: 'Hi, This is Alex from Inspra AI. Are you there?', time: '00:01' },
+            { role: 'agent', text: 'Hello? Can you hear me?', time: '00:06' },
+            { role: 'agent', text: 'I'll try again shortly. Goodbye!', time: '00:12' },
+        ],
+        noAnswer: [
+            { role: 'agent', text: '[Call was not answered. No connection established.]', time: '00:00' },
+        ],
+        interested: [
+            { role: 'agent', text: 'Hi, This is Alex, an AI assistant from Inspra AI. I have an exciting offer I'd love to share with you. Do you have a moment?', time: '00:01' },
+            { role: 'customer', text: 'Sure, what is it about?', time: '00:08' },
+            { role: 'agent', text: 'Great! We help businesses like yours automate outreach with our AI calling platform. It's significantly more efficient than traditional calling methods.', time: '00:11' },
+            { role: 'customer', text: 'That does sound interesting. Can you send me more information?', time: '00:22' },
+            { role: 'agent', text: 'Absolutely! I'll have our team send over a detailed overview. What's the best email address for you?', time: '00:26' },
+        ],
+        IVR: [
+            { role: 'agent', text: 'Hi, This is Alex from Inspra AI...', time: '00:01' },
+            { role: 'customer', text: '[IVR System]: Press 1 for sales, Press 2 for support...', time: '00:04' },
+            { role: 'agent', text: '[IVR detected — call handed off per protocol]', time: '00:10' },
+        ],
+        default: [
+            { role: 'agent', text: 'Hi, This is Alex, an AI assistant from Inspra AI. How are you today?', time: '00:01' },
+            { role: 'customer', text: 'Hello?', time: '00:10' },
+        ]
+    };
+
+    // ===== STATE =====
+    let currentPage = 1;
+    const perPage = 15;
+    let filteredData = [...callsData];
+    let activeCall = null;
+    let activeCallIndex = 0;
+    let currentTab = 'details';
+    let isPlaying = false;
+    let playInterval = null;
+    let currentProgress = 0;
+    let totalDuration = 30;
+
+    // ===== TIME =====
+    function updateTime() {
+        const el = document.getElementById('topbar-time');
+        if (el) {
+            const now = new Date();
+            el.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+    }
+    updateTime();
+    setInterval(updateTime, 30000);
+
+    // ===== BADGE =====
+    function getBadge(d) {
+        const map = {
+            notInterested: 'badge-notInterested',
+            voiceMail: 'badge-voiceMail',
+            noSpeech: 'badge-noSpeech',
+            noAnswer: 'badge-noAnswer',
+            interested: 'badge-interested',
+            IVR: 'badge-IVR'
+        };
+        return '<span class="badge ' + (map[d] || 'badge-default') + '">' + d + '</span>';
+    }
+
+    // ===== RENDER TABLE =====
+    function renderTable() {
+        const tbody = document.getElementById('calls-tbody');
+        const start = (currentPage - 1) * perPage;
+        const end = Math.min(start + perPage, filteredData.length);
+        const pageData = filteredData.slice(start, end);
+
+        tbody.innerHTML = pageData.map((call, i) => {
+            const shortId = call.id.substring(0, 8) + '...';
+            const timeParts = call.time.split(' ');
+            return '<tr onclick="openModal(' + (start + i) + ')">' +
+                '<td><div class="cell-call-id">' +
+                    '<div class="call-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014 12a19.79 19.79 0 01-3-8.65A2 2 0 012.92 1.37h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.7-1.7a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>' +
+                    '<span class="call-id-text">' + shortId + '</span>' +
+                    '<button class="copy-btn" onclick="event.stopPropagation();copyId(\'' + call.id + '\')" title="Copy ID"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>' +
+                '</div></td>' +
+                '<td class="cell-time"><span class="time-date">' + timeParts[0] + ' ' + timeParts[1] + '</span>' + timeParts[2] + ' ' + timeParts[3] + '</td>' +
+                '<td class="cell-from">' + call.from + '</td>' +
+                '<td class="cell-to">' + call.to + '</td>' +
+                '<td class="cell-duration">' + call.duration + '</td>' +
+                '<td>' + getBadge(call.disposition) + '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    // ===== RENDER PAGINATION =====
+    function renderPagination() {
+        const total = filteredData.length;
+        const totalPages = Math.ceil(total / perPage);
+        const start = (currentPage - 1) * perPage + 1;
+        const end = Math.min(currentPage * perPage, total);
+
+        document.getElementById('pagination-info').textContent = 'Showing ' + start + '-' + end + ' of ' + total.toLocaleString() + ' calls';
+
+        const pagesEl = document.getElementById('pagination-pages');
+        let pages = '';
+        const showPages = [1, 2, 3, 4, 5];
+        showPages.forEach(p => {
+            if (p <= totalPages) {
+                pages += '<button class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="goToPage(' + p + ')">' + p + '</button>';
+            }
+        });
+        if (totalPages > 6) pages += '<button class="page-btn dots">...</button>';
+        if (totalPages > 5) pages += '<button class="page-btn' + (currentPage === totalPages ? ' active' : '') + '" onclick="goToPage(' + totalPages + ')">' + totalPages + '</button>';
+        pagesEl.innerHTML = pages;
+    }
+
+    function goToPage(p) {
+        currentPage = p;
+        renderTable();
+        renderPagination();
+    }
+
+    // ===== SEARCH/FILTER =====
+    document.getElementById('search-input').addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        filteredData = callsData.filter(c =>
+            c.id.toLowerCase().includes(q) ||
+            c.from.toLowerCase().includes(q) ||
+            c.to.includes(q) ||
+            c.disposition.toLowerCase().includes(q)
+        );
+        currentPage = 1;
+        renderTable();
+        renderPagination();
+    });
+
+    // ===== COPY =====
+    function copyId(id) {
+        navigator.clipboard.writeText(id).catch(() => {});
+    }
+
+    // ===== MODAL =====
+    function openModal(index) {
+        const call = filteredData[index];
+        if (!call) return;
+        activeCall = call;
+        activeCallIndex = index;
+
+        // Update title
+        document.getElementById('modal-title-main').textContent = 'Summary ' + call.from + ' | ' + call.to;
+        document.getElementById('modal-title-sub').textContent = call.time + ' · ' + call.duration + ' duration';
+
+        // Update details
+        const outcomeEl = document.getElementById('detail-outcome');
+        outcomeEl.textContent = call.outcome;
+        outcomeEl.className = 'detail-value' + (call.disposition === 'interested' ? ' outcome-interested' : call.disposition === 'notInterested' ? ' outcome-ni' : '');
+        document.getElementById('detail-overview').textContent = 'Time: ' + call.time;
+        document.getElementById('detail-disposition-reason').textContent = call.dispositionReason;
+        document.getElementById('detail-summary').textContent = call.summary;
+
+        // Variables
+        const varList = document.getElementById('variables-list');
+        varList.innerHTML = Object.entries(call.variables || {}).map(([k, v]) =>
+            '<div class="var-row"><span class="var-key">' + k + '</span><span class="var-val">' + v + '</span></div>'
+        ).join('');
+
+        // Duration
+        const durParts = call.duration.split(':');
+        totalDuration = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0) || 30;
+        document.getElementById('duration-time').textContent = call.duration.includes(':') && call.duration.split(':')[0].length <= 1 ? '00:' + (call.duration.split(':')[1] || '00') : call.duration;
+
+        // Transcript
+        const transcript = transcriptsByDisposition[call.disposition] || transcriptsByDisposition.default;
+        const transcriptEl = document.getElementById('transcript-scroll');
+        transcriptEl.innerHTML = transcript.map(m => {
+            const isAgent = m.role === 'agent';
+            return '<div class="transcript-bubble ' + m.role + '">' +
+                '<div class="bubble-meta ' + m.role + '">' +
+                    (isAgent ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><path d="M19 3h-6v4h6V3zM19 11h-6v10h6V11zM11 15H3v4h8v-4z"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>') +
+                    (isAgent ? 'Agent' : 'Customer') +
+                    '<span class="bubble-time">' + m.time + '</span>' +
+                '</div>' +
+                '<div class="bubble-text">' + m.text + '</div>' +
+            '</div>';
+        }).join('');
+
+        // Nav counter
+        document.getElementById('call-nav-current').textContent = index + 1;
+        document.getElementById('call-nav-total').textContent = filteredData.length;
+
+        // Reset audio
+        resetAudio();
+        currentTab = 'details';
+        switchTab('details');
+
+        // Show modal
+        const overlay = document.getElementById('modal-overlay');
+        overlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('modal-overlay').classList.remove('visible');
+        document.body.style.overflow = '';
+        stopPlay();
+    }
+
+    function handleOverlayClick(e) {
+        if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('tab-details').className = 'modal-tab' + (tab === 'details' ? ' active' : '');
+        document.getElementById('tab-variables').className = 'modal-tab' + (tab === 'variables' ? ' active' : '');
+        document.getElementById('details-content').style.display = tab === 'details' ? '' : 'none';
+        document.getElementById('variables-content').style.display = tab === 'variables' ? '' : 'none';
+    }
+
+    function nextCall() {
+        const next = activeCallIndex + 1;
+        if (next < filteredData.length) openModal(next);
+    }
+
+    // ===== AUDIO SIMULATION =====
+    function togglePlay() {
+        if (isPlaying) stopPlay(); else startPlay();
+    }
+
+    function startPlay() {
+        isPlaying = true;
+        document.getElementById('play-icon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        playInterval = setInterval(() => {
+            currentProgress = Math.min(currentProgress + (1 / totalDuration), 1);
+            updateProgressUI();
+            if (currentProgress >= 1) stopPlay();
+        }, 1000);
+    }
+
+    function stopPlay() {
+        isPlaying = false;
+        clearInterval(playInterval);
+        document.getElementById('play-icon').innerHTML = '<polygon points="5,3 19,12 5,21"/>';
+    }
+
+    function resetAudio() {
+        stopPlay();
+        currentProgress = 0;
+        updateProgressUI();
+    }
+
+    function updateProgressUI() {
+        const pct = (currentProgress * 100).toFixed(1) + '%';
+        document.getElementById('progress-bar').style.width = pct;
+        document.getElementById('progress-dot').style.left = pct;
+        const elapsed = Math.floor(currentProgress * totalDuration);
+        const m = Math.floor(elapsed / 60);
+        const s = elapsed % 60;
+        document.querySelector('.progress-time').textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function seekAudio(e) {
+        const bar = e.currentTarget;
+        const rect = bar.getBoundingClientRect();
+        currentProgress = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        updateProgressUI();
+    }
+
+    function setSpeed(s) {
+        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    // ===== KEYBOARD =====
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowRight' && document.getElementById('modal-overlay').classList.contains('visible')) nextCall();
+    });
+
+    // ===== INIT =====
+    renderTable();
+    renderPagination();
+</script>
 </body>
 </html>
